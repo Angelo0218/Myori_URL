@@ -73,8 +73,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
     }
 
-    $base_url = $_SERVER['HTTP_HOST'] .'/'. $code;
-    json(0, 'OK',[
+    $base_url = $_SERVER['HTTP_HOST'] . '/' . $code;
+    json(0, 'OK', [
         'short' => $base_url,
         'generic' => 'https://' . $base_url,
         'long' => 'https://' . $base_url,
@@ -113,33 +113,37 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 }
 
-function json($code, $msg, $data=[]) {
+function json($code, $msg, $data = [])
+{
     header("Content-Type: application/json; charset=utf-8");
     echo json_encode(['code' => $code, 'msg' => $msg, 'data' => $data]);
     exit(0);
 }
 
-function db() {
+function db()
+{
     try {
         $pdo = new PDO(DB_DSN, DB_USER, DB_PASSWD);
     } catch (PDOException $e) {
-        json(-1, '数据库连接失败!'.$e->getMessage());
+        json(-1, '数据库连接失败!' . $e->getMessage());
     }
 
     return $pdo;
 }
 
-function generate_code() {
+function generate_code()
+{
     $seeds = array_merge(range('a', 'z'), range('A', 'Z'), range(0, 9));
     $depository = [];
-    for ($i = 0; $i < CODE_LENGTH-1; $i++) {
+    for ($i = 0; $i < CODE_LENGTH - 1; $i++) {
         $depository = array_merge($depository, $seeds);
     }
     shuffle($depository);
     return join('', array_slice($depository, 0, CODE_LENGTH));
 }
 
-function get_client_ip() {
+function get_client_ip()
+{
     if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
         return $_SERVER['HTTP_CLIENT_IP'];
     } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
@@ -149,7 +153,8 @@ function get_client_ip() {
     }
 }
 
-function is_domain_blocked($domain) {
+function is_domain_blocked($domain)
+{
     $db = db();
     $stmt = $db->prepare("select * from blacklist");
     $stmt->execute();
@@ -169,62 +174,70 @@ header("Content-Type: text/html");
 
 <!DOCTYPE html>
 <html lang="zh-TW">
+
 <head>
-     <meta charset="UTF-8">
-     <title>公部門短網域｜苗栗國政府</title>
-     <meta name="description" content="統一東亞從統一URL開始！" />
-     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0;">
-     <meta name="format-detection" content="telephone=no">
-     <link rel="icon" type="image/png" href="/img/logo.png">
-     <link rel="stylesheet" type="text/css" href="/main.css">
-     <link rel="preconnect" href="https://fonts.googleapis.com"> 
-     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> 
-     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC&display=swap" rel="stylesheet">
-     <link rel="preconnect" href="https://fonts.googleapis.com">
-     <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
-     <link rel="stylesheet" href="https://at.alicdn.com/t/c/font_3948736_5826ppfenst.css">
-     <link rel="stylesheet" type="text/css" href="/main.css">
-     <style>
+    <meta charset="UTF-8">
+    <title>公部門短網域｜苗栗國政府</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0;">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="icon" type="image/png" href="/img/logo.png">
+    <link rel="stylesheet" type="text/css" href="/main.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://at.alicdn.com/t/c/font_3948736_5826ppfenst.css">
+    <link rel="stylesheet" type="text/css" href="/main.css">
+    <style>
         * {
             padding: 0;
             margin: 0;
             box-sizing: border-box;
         }
+
         body {
-            display:flex;
-            justify-content:center;
+            display: flex;
+            justify-content: center;
             align-items: center;
             height: 100vh;
             color: #333
         }
+
         a {
             font-size: .8em;
             width: auto;
             color: #999;
         }
+
         .site-header {
             margin-bottom: 14px;
             margin-top: -140px;
             text-align: center;
         }
+
         .main-title {
             font-size: 1.8em;
         }
+
         .subtitle {
             font-size: 1em;
             color: #bbb;
             font-weight: 400;
             margin: 4px 0 10px 0;
         }
+
         .site-body {
             margin: 24px 0 24px;
         }
+
         .site-body-item {
             margin: 22px 0 22px 0;
             display: flex;
             justify-content: center;
             align-items: center;
         }
+
         .site-input {
             border-radius: 3px;
             padding: 5px;
@@ -234,6 +247,7 @@ header("Content-Type: text/html");
             width: 280px;
             box-sizing: border-box;
         }
+
         .site-button {
             background-color: #fff;
             color: #333;
@@ -244,12 +258,13 @@ header("Content-Type: text/html");
             border: 1px solid #ccc;
             border-radius: 3px;
             font-size: 14px;
-            font-family: Arial,sans-serif;
+            font-family: Arial, sans-serif;
             display: inline-block;
             line-height: 1.25;
             outline: 0;
             margin-left: 4px;
         }
+
         .site-button:hover {
             background-color: #f9f9f9;
             border: 1px solid #ccc;
@@ -259,70 +274,105 @@ header("Content-Type: text/html");
             font-weight: 700;
             cursor: pointer;
         }
+
         .site-footer {
             text-align: center;
             font-size: 12px;
             color: #bbb;
         }
+
+        header {
+            width: 100%;
+            background-color: #fff;
+            height: 20px;
+            position: absolute;
+            top: 0;
+            box-shadow: 0.2px 1px 1px 1px;
+        }
+
+        .logo {
+            width: 25px;
+
+            height: 25px;
+            position: absolute;
+            top: 8px;
+
+        }
+        span{
+            position: absolute;
+            top: 9px;
+            left:50px;
+        }
+
     </style>
-     <!--一般-->
-     <meta property="og:title" content="公部門短網域｜苗栗國政府"/>
-     <meta property="og:description" content="統一東亞從統一URL開始！" />
-     <meta property="og:type" content="website"/>
-     <meta property="og:url" content="https://url.myori.org"/>
-     <meta property="og:image" content="https://url.myori.org/img/logo.png"/>
-     <!--Open Graph-->
- </head>
+    <!--一般-->
+    <meta property="og:title" content="公部門短網域｜苗栗國政府" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://url.myori.org" />
+    <meta property="og:image" content="https://url.myori.org/img/logo.png" />
+    <!--Open Graph-->
+</head>
 <!--head-->
-<main>
-    <div class="container">
-        <div class="site-header">
-            <h1 class="main-title">苗栗國公務部門URL轉換</h1>
-            <h2 class="subtitle">統一東亞從統一URL開始！</h2>
-        </div>
-        <div class="site-body">
-            <div class="site-body-item">
-                <input type="text" name="url" class="site-input"/>
-                <div id="submit" class="site-button"><i class="iconfont icon-exchange"></i></div>
+
+<body>
+    <header>
+        <img src="img/logo.png" alt="logo" class='logo'>
+        <span >苗栗國數位省</span>
+    </header>
+    <main>
+        <div class="container">
+            <div class="site-header">
+                <h1 class="main-title">苗栗國公部門URL轉換</h1>
+                <h2 class="subtitle">統一東亞從統一URL開始！</h2>
             </div>
-            <div class="site-body-item">
-                <input type="text" name="short_url" class="site-input" />
-                <div id="copy" class="site-button"><i class="iconfont icon-copy"></i></div>
+            <div class="site-body">
+                <div class="site-body-item">
+                    <input type="text" name="url" class="site-input" />
+                    <div id="submit" class="site-button"><i class="iconfont icon-exchange"></i></div>
+                </div>
+                <div class="site-body-item">
+                    <input type="text" name="short_url" class="site-input" />
+                    <div id="copy" class="site-button"><i class="iconfont icon-copy"></i></div>
+                </div>
+            </div>
+            <div class="site-footer">
+                <p>&copy苗栗國政府｜數位省</a></p>
             </div>
         </div>
-        <div class="site-footer">
-            <p>&copy苗栗國政府｜數位省</a></p>
-        </div>
-    </div>
-<main>
-    <script>
-        $('#submit').click(function () {
-            var url = $('input[name=url]').val();
-
-            if (url == '') {
-                alert("链接不能为空！");
-                return;
-            }
-
-            if (!/^http(s)?:\/\//.test(url)) {
-                alert("链接格式不正确！");
-                return;
-            }
-
-            $.post("/", {url: url}, function (data) {
-                if (data.code == 0) {
-                    $('input[name=short_url]').val(data.data.generic);
-                } else {
-                    alert(data.msg);
-                }
-            }, 'json')
-        });
-
-        $('#copy').click(function () {
-            $("input[name=short_url]").focus();
-            $("input[name=short_url]").select();
-            document.execCommand("Copy");
-        });
-    </script>
+        <main>
 </body>
+
+<script>
+    $('#submit').click(function() {
+        var url = $('input[name=url]').val();
+
+        if (url == '') {
+            alert("链接不能为空！");
+            return;
+        }
+
+        if (!/^http(s)?:\/\//.test(url)) {
+            alert("链接格式不正确！");
+            return;
+        }
+
+        $.post("/", {
+            url: url
+        }, function(data) {
+            if (data.code == 0) {
+                $('input[name=short_url]').val(data.data.generic);
+            } else {
+                alert(data.msg);
+            }
+        }, 'json')
+    });
+
+    $('#copy').click(function() {
+        $("input[name=short_url]").focus();
+        $("input[name=short_url]").select();
+        document.execCommand("Copy");
+    });
+</script>
+</body>
+
 </html>
