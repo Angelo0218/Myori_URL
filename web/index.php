@@ -172,6 +172,7 @@ header("Content-Type: text/html");
 <head>
      <meta charset="UTF-8">
      <title>公部門短網域｜苗栗國政府</title>
+     <meta name="description" content="統一東亞從統一URL開始！" />
      <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0;">
      <meta name="format-detection" content="telephone=no">
      <link rel="icon" type="image/png" href="/img/logo.png">
@@ -266,6 +267,7 @@ header("Content-Type: text/html");
     </style>
      <!--一般-->
      <meta property="og:title" content="公部門短網域｜苗栗國政府"/>
+     <meta property="og:description" content="統一東亞從統一URL開始！" />
      <meta property="og:type" content="website"/>
      <meta property="og:url" content="https://url.myori.org"/>
      <meta property="og:image" content="https://url.myori.org/img/logo.png"/>
